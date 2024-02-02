@@ -124,7 +124,7 @@ function App() {
   }
 
   const patchNoteState = (_id, title, content) => {
-    setNotes(prevNotes.map((note)=>note._id===_id? 
+    setNotes(notes.map((note)=>note._id===_id? 
     (note.title, note.content):(title, content)))
   }
 
