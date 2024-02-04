@@ -11,8 +11,9 @@ function App() {
 
   // -- Dialog props-- 
   const [dialogOpen, setDialogOpen] = useState(false)
-  const [dialogNote, setDialogNote] = useState(undefined)
+  const [dialogNote, setDialogNote] = useState(null)
 
+  
   // -- Database interaction functions --
   useEffect(() => {
     const getNotes = async () => {
@@ -38,7 +39,7 @@ function App() {
   }, [])
 
   const deleteNote = (entry) => {
-    try {
+		try {
       fetch(`http://localhost:4000/deleteNote/${entry._id}`, {
         method: "DELETE",
         headers: {
@@ -50,8 +51,8 @@ function App() {
           console.log("Served failed:", response.status)
         } else {
             await response.json().then((data) => {
-            alert(data.response)
             deleteNoteState(entry._id)
+						alert(data.response)
         }) 
         }
       })
@@ -63,7 +64,7 @@ function App() {
   }
 
   const deleteAllNotes = () => {
-    try {
+		try {
       fetch("http://localhost:4000/deleteAllNotes", {
         method: "DELETE",
         headers: {
@@ -75,8 +76,8 @@ function App() {
           console.log("Served failed:", response.status)
         } else {
             await response.json().then((data) => {
-            alert(data.response)
             deleteAllNotesState()
+						alert(data.response)
           }) 
         }
       })
@@ -87,7 +88,7 @@ function App() {
     }
   }
 
-
+  
   // -- Dialog functions --
   const editNote = (entry) => {
     setDialogNote(entry)
@@ -114,9 +115,7 @@ function App() {
   }
 
   const deleteNoteState = (id) => {
-    setNotes((prevNotes) =>
-      prevNotes.filter((note) => note._id !== id)
-    );
+		setNotes((prevNotes) => prevNotes.filter((note) => note._id !== id))
   }
 
   const deleteAllNotesState = () => {
@@ -124,9 +123,9 @@ function App() {
   }
 
   const patchNoteState = (_id, title, content) => {
-    setNotes(notes.map((note)=>note._id===_id? 
+		setNotes((prevNotes) => prevNotes.map((note)=>note._id===_id? 
     (note.title, note.content):(title, content)))
-  }
+	}
 
   return (
     <div className="App">
@@ -166,7 +165,7 @@ function App() {
               >
               Delete All Notes
           </button>}
-        
+
         </div>
 
         <Dialog
@@ -175,7 +174,7 @@ function App() {
           closeDialog={closeDialog}
           postNote={postNoteState}
           patchNote={patchNoteState}
-        />
+          />
 
       </header>
     </div>
