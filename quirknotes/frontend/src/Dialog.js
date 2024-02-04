@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from "react"
+import React, {useState, useEffect} from "react";
 import './App.css';
-import patchNoteState from './App.js'
+import patchNoteState from './App.js';
 
-const baseNote = {title: "", content: ""}
+const baseNote = {title: "", content: ""};
 
 function Dialog({open, initialNote, closeDialog, postNote: postNoteState}) {
 
@@ -10,12 +10,14 @@ function Dialog({open, initialNote, closeDialog, postNote: postNoteState}) {
     const [note, setNote] = useState(baseNote)
     const [status, setStatus] = useState("")
 
+
     // -- Dialog functions --
     useEffect(() => {
         !initialNote && setNote(baseNote)
         initialNote && setNote(initialNote)
     }, [initialNote])
 
+    
     const close = () => {
         setStatus("")
         setNote(baseNote)
@@ -56,6 +58,7 @@ function Dialog({open, initialNote, closeDialog, postNote: postNoteState}) {
     }
 
     const patchNote = (entry) => {
+
         if (!entry || !entry.title || !entry.content) {
             return 
         }
@@ -64,25 +67,26 @@ function Dialog({open, initialNote, closeDialog, postNote: postNoteState}) {
 
         try {
             fetch(`http://localhost:4000/patchNote/${entry._id}`,
-                {method: "POST",
+                {method: "PATCH",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({title: note.title, content: note.content})} )
+                body: JSON.stringify({title: entry.title, content: entry.content})} )
             .then(async (response) => {
                 if (!response.ok) {
-                    setStatus(`Error trying to post note`)
+                    patchNoteState(entry._id, entry.title, entry.content)
+                    setStatus(`Error trying to patch note`)
                     console.log("Served failed:", response.status)
                 } else {
-                    await response.json().then((data) => {
-                        patchNoteState(entry._id, note.title, note.content)
+                    await response.json().then(() => {
+                        patchNoteState(entry._id, entry.title, entry.content)
                         //setStatus("Note posted!") // Can be replaced with close(), if you want!
                         close()
                     }) 
                 }
             })
         } catch (error) {
-            setStatus("Error trying to post note")
+            setStatus("Error trying to patch note")
             console.log("Fetch function failed:", error)
         } 
     }
