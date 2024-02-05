@@ -115,7 +115,7 @@ function App() {
   }
 
   const deleteNoteState = (id) => {
-		setNotes((prevNotes) => prevNotes.filter((note) => note._id !== id))
+		setNotes(notes.filter((note) => note._id !== id))
   }
 
   const deleteAllNotesState = () => {
@@ -123,8 +123,7 @@ function App() {
   }
 
   const patchNoteState = (_id, title, content) => {
-		setNotes((prevNotes) => prevNotes.map((note)=>note._id===_id? 
-    (note.title, note.content):(title, content)))
+		setNotes(notes.map((note) => note._id === _id ? { ...note, title, content } : note))
 	}
 
   return (
