@@ -123,7 +123,7 @@ function App() {
   }
 
   const patchNoteState = (_id, title, content) => {
-		setNotes(notes.map((note) => note._id === _id ? { ...note, title, content } : note))
+		setNotes(notes.flatMap((note) => (note._id === _id)? {_id, title, content}: 1))
 	}
 
   return (

@@ -1,10 +1,9 @@
 import React, {useState, useEffect} from "react";
 import './App.css';
-import patchNoteState from './App.js';
 
 const baseNote = {title: "", content: ""};
 
-function Dialog({open, initialNote, closeDialog, postNote: postNoteState}) {
+function Dialog({open, initialNote, closeDialog, postNote: postNoteState, patchNote: patchNoteState}) {
 
     // -- Dialog props --
     const [note, setNote] = useState(baseNote)
@@ -59,27 +58,28 @@ function Dialog({open, initialNote, closeDialog, postNote: postNoteState}) {
 
     const patchNote = (entry) => {
 
-        if (!entry || !entry.title || !entry.content) {
+        if (!note || !note.title || !note.content) {
             return 
         }
 
         setStatus("Loading...")
 
         try {
-            fetch(`http://localhost:4000/patchNote/${entry._id}`,
+            fetch(`http://localhost:4000/patchNote/${note._id}`,
                 {method: "PATCH",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({title: entry.title, content: entry.content})} )
+                body: JSON.stringify({title: note.title, content: note.content})} )
             .then(async (response) => {
                 if (!response.ok) {
-                    patchNoteState(entry._id, entry.title, entry.content)
+                    patchNoteState(note._id, note.title, note.content)
                     setStatus(`Error trying to patch note`)
                     console.log("Served failed:", response.status)
                 } else {
-                    await response.json().then(() => {
-                        patchNoteState(entry._id, entry.title, entry.content)
+                    await response.json().then((data) => {
+                        patchNoteState(note._id, note.title, note.content)
+                        setStatus(data.response)
                         //setStatus("Note posted!") // Can be replaced with close(), if you want!
                         close()
                     }) 
